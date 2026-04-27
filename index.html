@@ -157,6 +157,9 @@
         async function generateCurriculum(e) {
             e.preventDefault();
             
+async function generateCurriculum(e) {
+            e.preventDefault();
+            
             const apiKey = "AIzaSyBjEJWOLATUu2KIFQnZFHKqW2cDnl7tm3U";
 
             const topic = document.getElementById('topic').value;
@@ -211,39 +214,37 @@ Duration: ${months} months.`;
             };
 
             try {
-                let response;
-                const delays = [1000, 2000, 4000, 8000, 16000];
-              const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                // Exponential backoff retry logic
-                for (let i = 0; i <= delays.length; i++) {
-                    try {
-                        response = await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        
-                        if (response.ok) break;
-                        
-                        if (i === delays.length) throw new Error(`API Error: ${response.status}`);
-                        await new Promise(resolve => setTimeout(resolve, delays[i]));
-                    } catch (err) {
-                        if (i === delays.length) throw err;
-                        await new Promise(resolve => setTimeout(resolve, delays[i]));
-                    }
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                // Read the exact error from Google if the request fails
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `HTTP Error ${response.status}`);
                 }
 
                 const data = await response.json();
-                const curriculumText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                let curriculumText = data.candidates?.[0]?.content?.parts?.[0]?.text;
                 
                 if (!curriculumText) throw new Error("Invalid response format from Gemini");
                 
+                // Clean the text to prevent JSON.parse crashes
+                curriculumText = curriculumText.replace(/```json/g, '').replace(/```/g, '').trim();
+                
                 const curriculumJSON = JSON.parse(curriculumText);
+                
+                if (!curriculumJSON.roadmap) throw new Error("Missing roadmap data in response");
+
                 renderCurriculum(curriculumJSON.roadmap);
 
             } catch (error) {
-                console.error(error);
-                alert(`Generation Failed: ${error.message}`);
+                console.error("Full Error Details:", error);
+                alert(`Generation Failed:\n${error.message}`);
                 document.getElementById('results-empty').classList.remove('hidden');
             } finally {
                 document.getElementById('loading').classList.add('hidden');
@@ -252,7 +253,6 @@ Duration: ${months} months.`;
                 btn.innerHTML = `<span>Generate Roadmap</span><svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`;
             }
         }
-
         // --- Render Logic ---
         function renderCurriculum(roadmapData) {
             const container = document.getElementById('curriculum-content');
