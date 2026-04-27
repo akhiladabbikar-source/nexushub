@@ -10,35 +10,31 @@
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0f172a; /* tailwind slate-900 */
-            color: #f8fafc; /* tailwind slate-50 */
+            background-color: #0f172a; 
+            color: #f8fafc; 
         }
         .hidden { display: none; }
         
-        /* Custom scrollbar for timeline */
         .timeline-container::-webkit-scrollbar { width: 6px; }
         .timeline-container::-webkit-scrollbar-track { background: transparent; }
         .timeline-container::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
         .timeline-container::-webkit-scrollbar-thumb:hover { background-color: #475569; }
 
-        /* Custom Range Slider */
         input[type=range] {
-            accent-color: #ea580c; /* tailwind orange-600 */
+            accent-color: #ea580c; 
         }
         
-        /* Form inputs autocomplete background fix for dark mode */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus, 
         input:-webkit-autofill:active{
-            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* slate-800 */
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; 
             -webkit-text-fill-color: white !important;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-orange-500/30 selection:text-orange-200">
 
-    <!-- Navbar -->
     <nav class="bg-slate-950 border-b border-slate-800 shadow-lg relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -50,10 +46,8 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- STUDENT VIEW -->
         <div id="view-student" class="animate-fade-in">
             <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                 <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -61,7 +55,6 @@
             </h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Inputs -->
                 <div class="lg:col-span-4 bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700 h-fit">
                     <form id="generator-form" onsubmit="generateCurriculum(event)">
                         <div class="mb-5">
@@ -108,10 +101,8 @@
                     </form>
                 </div>
 
-                <!-- Output Timeline -->
                 <div class="lg:col-span-8 bg-slate-800 p-2 sm:p-6 rounded-2xl shadow-xl border border-slate-700 timeline-container max-h-[800px] overflow-y-auto relative">
                     
-                    <!-- decorative background glow -->
                     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-orange-600/5 blur-3xl pointer-events-none"></div>
 
                     <div id="loading" class="hidden flex flex-col items-center justify-center h-80 text-slate-400 relative z-10">
@@ -135,8 +126,7 @@
                     </div>
 
                     <div id="curriculum-content" class="hidden relative border-l-2 border-slate-700/50 ml-4 sm:ml-8 space-y-10 py-6 pr-2 sm:pr-6 z-10">
-                        <!-- Content injected via JS -->
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -155,9 +145,6 @@
     <script>
         // --- Gemini API Logic ---
         async function generateCurriculum(e) {
-            e.preventDefault();
-            
-async function generateCurriculum(e) {
             e.preventDefault();
             
             const apiKey = "AIzaSyBjEJWOLATUu2KIFQnZFHKqW2cDnl7tm3U";
@@ -253,6 +240,7 @@ Duration: ${months} months.`;
                 btn.innerHTML = `<span>Generate Roadmap</span><svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`;
             }
         }
+
         // --- Render Logic ---
         function renderCurriculum(roadmapData) {
             const container = document.getElementById('curriculum-content');
@@ -268,10 +256,8 @@ Duration: ${months} months.`;
 
                 const html = `
                     <div class="relative pl-6 sm:pl-10 group animate-fade-in" style="animation-delay: ${index * 100}ms; animation-fill-mode: both;">
-                        <!-- Timeline Dot -->
                         <div class="absolute left-[-9px] top-1.5 h-4 w-4 bg-orange-500 rounded-full ring-4 ring-slate-800 group-hover:scale-125 transition-transform duration-300 shadow-[0_0_10px_rgba(234,88,12,0.5)]"></div>
                         
-                        <!-- Content Card -->
                         <div class="bg-slate-900/80 rounded-xl p-5 sm:p-7 border border-slate-700/80 shadow-lg hover:border-orange-500/30 transition-colors duration-300 backdrop-blur-sm">
                             <h3 class="text-xl font-bold text-white tracking-tight">${item.month}</h3>
                             <p class="text-sm text-slate-400 mt-2 mb-6 font-light leading-relaxed">${item.description}</p>
@@ -317,7 +303,6 @@ Duration: ${months} months.`;
             const btn = document.querySelector('#export-header button');
             const originalHTML = btn.innerHTML;
             
-            // Show loading state on button
             btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...`;
             btn.disabled = true;
 
@@ -325,12 +310,11 @@ Duration: ${months} months.`;
                 margin:       0.5,
                 filename:     `curriculum_${topic || 'export'}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f172a' }, // Retains the dark theme look
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f172a' },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restore button state
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             });
