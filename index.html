@@ -157,7 +157,7 @@
         async function generateCurriculum(e) {
             e.preventDefault();
             
-            const apiKey = ""; // Environment provides the key at runtime
+            const apiKey = "AIzaSyBjEJWOLATUu2KIFQnZFHKqW2cDnl7tm3U";
 
             const topic = document.getElementById('topic').value;
             const domain = document.getElementById('domain').value;
@@ -213,8 +213,7 @@ Duration: ${months} months.`;
             try {
                 let response;
                 const delays = [1000, 2000, 4000, 8000, 16000];
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
+              const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 // Exponential backoff retry logic
                 for (let i = 0; i <= delays.length; i++) {
                     try {
