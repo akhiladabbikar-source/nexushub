@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenAI Curriculum & Academic Resource Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0f172a; /* tailwind slate-900 */
+            color: #f8fafc; /* tailwind slate-50 */
+        }
+        .hidden { display: none; }
+        
+        /* Custom scrollbar for timeline */
+        .timeline-container::-webkit-scrollbar { width: 6px; }
+        .timeline-container::-webkit-scrollbar-track { background: transparent; }
+        .timeline-container::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
+        .timeline-container::-webkit-scrollbar-thumb:hover { background-color: #475569; }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            accent-color: #ea580c; /* tailwind orange-600 */
+        }
+        
+        /* Form inputs autocomplete background fix for dark mode */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* slate-800 */
+            -webkit-text-fill-color: white !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-orange-500/30 selection:text-orange-200">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-950 border-b border-slate-800 shadow-lg relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <span class="font-bold text-xl tracking-wide text-white">NexusHub</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- STUDENT VIEW -->
+        <div id="view-student" class="animate-fade-in">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                GenAI Curriculum Generator
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Inputs -->
+                <div class="lg:col-span-4 bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700 h-fit">
+                    <form id="generator-form" onsubmit="generateCurriculum(event)">
+                        <div class="mb-5">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Target Topic</label>
+                            <input type="text" id="topic" required placeholder="e.g. Data Science, Pharmacokinetics" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+                        </div>
+                        
+                        <div class="mb-5">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Domain Context</label>
+                            <div class="relative">
+                                <select id="domain" required class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white appearance-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition">
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Medical">Medical</option>
+                                    <option value="Pharma">Pharma</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Business">Business</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <label class="block text-sm font-medium text-slate-300 mb-2 flex justify-between items-center">
+                                <span>Duration</span>
+                                <span class="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-xs font-bold border border-orange-500/30">
+                                    <span id="duration-val">3</span> Months
+                                </span>
+                            </label>
+                            <input type="range" id="duration" min="1" max="12" value="3" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" oninput="document.getElementById('duration-val').innerText = this.value">
+                            <div class="flex justify-between text-xs text-slate-500 mt-2 px-1">
+                                <span>1m</span>
+                                <span>6m</span>
+                                <span>12m</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="generate-btn" class="w-full bg-orange-600 text-white font-medium py-3 rounded-xl hover:bg-orange-500 transition flex justify-center items-center gap-2 shadow-lg shadow-orange-900/20 group">
+                            <span>Generate Roadmap</span>
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Output Timeline -->
+                <div class="lg:col-span-8 bg-slate-800 p-2 sm:p-6 rounded-2xl shadow-xl border border-slate-700 timeline-container max-h-[800px] overflow-y-auto relative">
+                    
+                    <!-- decorative background glow -->
+                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-orange-600/5 blur-3xl pointer-events-none"></div>
+
+                    <div id="loading" class="hidden flex flex-col items-center justify-center h-80 text-slate-400 relative z-10">
+                        <svg class="animate-spin h-10 w-10 text-orange-500 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <p class="animate-pulse font-medium tracking-wide">Synthesizing Curriculum Data...</p>
+                        <p class="text-xs text-slate-500 mt-2">Powered by Gemini AI</p>
+                    </div>
+
+                    <div id="results-empty" class="flex flex-col items-center justify-center h-80 text-slate-500 text-center relative z-10">
+                        <div class="w-20 h-20 bg-slate-900 rounded-full flex items-center justify-center mb-6 shadow-inner border border-slate-700/50">
+                            <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <p class="text-sm">Configure parameters and click generate<br>to forge your custom learning path.</p>
+                    </div>
+
+                    <div id="export-header" class="hidden flex justify-end mb-2 relative z-10 pr-2 sm:pr-6">
+                        <button onclick="downloadPDF()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition shadow border border-slate-600 group">
+                            <svg class="w-4 h-4 text-orange-400 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download PDF
+                        </button>
+                    </div>
+
+                    <div id="curriculum-content" class="hidden relative border-l-2 border-slate-700/50 ml-4 sm:ml-8 space-y-10 py-6 pr-2 sm:pr-6 z-10">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <script>
+        // --- Gemini API Logic ---
+        async function generateCurriculum(e) {
+            e.preventDefault();
+            
+            const apiKey = ""; // Environment provides the key at runtime
+
+            const topic = document.getElementById('topic').value;
+            const domain = document.getElementById('domain').value;
+            const months = document.getElementById('duration').value;
+
+            // UI State updates
+            document.getElementById('results-empty').classList.add('hidden');
+            document.getElementById('curriculum-content').classList.add('hidden');
+            document.getElementById('export-header').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            
+            const btn = document.getElementById('generate-btn');
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...`;
+
+            const systemPrompt = `You are an expert academic curriculum generator. Generate a structured, month-by-month learning roadmap.`;
+            
+            const userPrompt = `Create a curriculum for the topic: "${topic}". 
+The target audience is from a "${domain}" background. Tailor the technical depth appropriately.
+Duration: ${months} months.`;
+
+            const schema = {
+                type: "OBJECT",
+                properties: {
+                    roadmap: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                month: { type: "STRING", description: "e.g., 'Month 1: Foundations'" },
+                                description: { type: "STRING", description: "Brief overview of the month" },
+                                modules: { type: "ARRAY", items: { type: "STRING" }, description: "Specific topics to learn" },
+                                project: { type: "STRING", description: "Practical application or project" },
+                                reading: { type: "STRING", description: "Recommended reading or resources" }
+                            },
+                            required: ["month", "description", "modules", "project", "reading"]
+                        }
+                    }
+                },
+                required: ["roadmap"]
+            };
+
+            const payload = {
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+
+            try {
+                let response;
+                const delays = [1000, 2000, 4000, 8000, 16000];
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+                // Exponential backoff retry logic
+                for (let i = 0; i <= delays.length; i++) {
+                    try {
+                        response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        if (response.ok) break;
+                        
+                        if (i === delays.length) throw new Error(`API Error: ${response.status}`);
+                        await new Promise(resolve => setTimeout(resolve, delays[i]));
+                    } catch (err) {
+                        if (i === delays.length) throw err;
+                        await new Promise(resolve => setTimeout(resolve, delays[i]));
+                    }
+                }
+
+                const data = await response.json();
+                const curriculumText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!curriculumText) throw new Error("Invalid response format from Gemini");
+                
+                const curriculumJSON = JSON.parse(curriculumText);
+                renderCurriculum(curriculumJSON.roadmap);
+
+            } catch (error) {
+                console.error(error);
+                alert(`Generation Failed: ${error.message}`);
+                document.getElementById('results-empty').classList.remove('hidden');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btn.innerHTML = `<span>Generate Roadmap</span><svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`;
+            }
+        }
+
+        // --- Render Logic ---
+        function renderCurriculum(roadmapData) {
+            const container = document.getElementById('curriculum-content');
+            container.innerHTML = ''; 
+
+            roadmapData.forEach((item, index) => {
+                const modulesHTML = item.modules.map(mod => `
+                    <li class="flex items-start text-sm text-slate-300 mb-2">
+                        <span class="mr-3 text-orange-500 mt-0.5 opacity-80">▹</span> 
+                        <span class="leading-relaxed">${mod}</span>
+                    </li>
+                `).join('');
+
+                const html = `
+                    <div class="relative pl-6 sm:pl-10 group animate-fade-in" style="animation-delay: ${index * 100}ms; animation-fill-mode: both;">
+                        <!-- Timeline Dot -->
+                        <div class="absolute left-[-9px] top-1.5 h-4 w-4 bg-orange-500 rounded-full ring-4 ring-slate-800 group-hover:scale-125 transition-transform duration-300 shadow-[0_0_10px_rgba(234,88,12,0.5)]"></div>
+                        
+                        <!-- Content Card -->
+                        <div class="bg-slate-900/80 rounded-xl p-5 sm:p-7 border border-slate-700/80 shadow-lg hover:border-orange-500/30 transition-colors duration-300 backdrop-blur-sm">
+                            <h3 class="text-xl font-bold text-white tracking-tight">${item.month}</h3>
+                            <p class="text-sm text-slate-400 mt-2 mb-6 font-light leading-relaxed">${item.description}</p>
+                            
+                            <div class="mb-6">
+                                <h4 class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-700/50 pb-2">Core Modules</h4>
+                                <ul class="list-none m-0 p-0">
+                                    ${modulesHTML}
+                                </ul>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                                <div class="bg-orange-950/20 p-4 rounded-lg border border-orange-500/10">
+                                    <h4 class="text-[11px] font-bold text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                        Practical Project
+                                    </h4>
+                                    <p class="text-sm text-slate-300 leading-relaxed">${item.project}</p>
+                                </div>
+
+                                <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+                                    <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                        Required Reading
+                                    </h4>
+                                    <p class="text-sm text-slate-300 leading-relaxed">${item.reading}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+
+            container.classList.remove('hidden');
+            document.getElementById('export-header').classList.remove('hidden');
+        }
+
+        // --- PDF Export Logic ---
+        function downloadPDF() {
+            const element = document.getElementById('curriculum-content');
+            const topic = document.getElementById('topic').value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const btn = document.querySelector('#export-header button');
+            const originalHTML = btn.innerHTML;
+            
+            // Show loading state on button
+            btn.innerHTML = `<svg class="animate-spin h-4 w-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...`;
+            btn.disabled = true;
+
+            const opt = {
+                margin:       0.5,
+                filename:     `curriculum_${topic || 'export'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f172a' }, // Retains the dark theme look
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore button state
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
